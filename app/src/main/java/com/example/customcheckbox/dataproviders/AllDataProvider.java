@@ -7,6 +7,12 @@ import com.google.gson.annotations.SerializedName;
  */
 public class AllDataProvider {
 
+    private boolean isSelected;
+
+    public AllDataProvider(){
+        isSelected = false;
+    }
+
     @SerializedName("Name")
     private String fullName;
 
@@ -26,5 +32,13 @@ public class AllDataProvider {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 }

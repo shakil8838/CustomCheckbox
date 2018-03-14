@@ -1,9 +1,13 @@
 package com.example.customcheckbox;
 
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.customcheckbox.adapters.DataAdapters;
 import com.example.customcheckbox.dataproviders.AllDataProvider;
@@ -21,14 +25,17 @@ public class MainActivity extends AppCompatActivity {
     private RetrofitInterface retrofitInterface;
     private List<AllDataProvider> list;
     private DataAdapters adapters;
-    private ListView listView;
+    private RecyclerView listView;
+    RecyclerView.LayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        listView = (ListView) findViewById(R.id.ListView);
+        layoutManager = new LinearLayoutManager(getApplicationContext());
+
+        listView = (RecyclerView) findViewById(R.id.ListView);
         retrofitInterface = RetrofitBuilder.getRetrofit().create(RetrofitInterface.class);
         Call<List<AllDataProvider>> call = retrofitInterface.getData();
         call.enqueue(new Callback<List<AllDataProvider>>() {
@@ -37,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
                 list = response.body();
                 adapters = new DataAdapters(getApplicationContext(), list);
+                listView.setLayoutManager(layoutManager);
                 listView.setAdapter(adapters);
             }
 
@@ -45,5 +53,13 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("Error on fetching Datas", call.toString() +"\t"+ t.toString());
             }
         });
+    }
+
+    public void setupActionBar(int listSize){
+
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.action_bar_layout);
+        TextView mTextView = (TextView) getSupportActionBar().getCustomView().findViewById(R.id.selectedNumber);
+        mTextView.setText(String.valueOf(listSize));
     }
 }
